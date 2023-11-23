@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comunicación entre Componentes</title>
+
+  <!-- Agregar estilos para mejorar la visualización -->
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    #contenedor {
+      border: 2px solid #000; /* Borde rectangular */
+      padding: 10px; /* Espaciado interno */
+      margin-top: 20px;
+      width: 150px; /* Ancho del contenedor */
+      height: 30px; /* Altura del contenedor */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>ACTIVIDAD 4</h1>
+  <h2>Comunicación Efectiva entre Componentes</h2>
+
+ 
+    <boton-component></boton-component>
+    <div id="contenedor">
+    <mensaje-component></mensaje-component>
+  </div>
+
+  <script>
+    // Definición del primer componente
+    class BotonComponent extends HTMLElement {
+      connectedCallback() {
+        this.innerHTML = '<button id="miBoton">Clickea aquí</button>';
+        
+        // Event Listener para el clic en el botón
+        this.querySelector('#miBoton').addEventListener('click', () => {
+          const customEvent = new CustomEvent('actualizar-datos', { 
+            detail: { nuevosDatos: 'Mensaje actualizado!!' } 
+          });
+          document.dispatchEvent(customEvent);
+        });
+      }
+    }
+
+    // Definición del segundo componente
+    class MensajeComponent extends HTMLElement {
+      connectedCallback() {
+        this.innerHTML = '<p id="miMensaje">Mensaje inicial</p>';
+        
+        // Event Listener para el evento personalizado 'actualizar-datos'
+        document.addEventListener('actualizar-datos', (event) => {
+          const nuevosDatos = event.detail.nuevosDatos;
+          this.querySelector('#miMensaje').innerText = nuevosDatos;
+        });
+      }
+    }
+
+    // Registro de los componentes personalizados
+    customElements.define('boton-component', BotonComponent);
+    customElements.define('mensaje-component', MensajeComponent);
+  </script>
+</body>
+</html>
